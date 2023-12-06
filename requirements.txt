@@ -1,0 +1,7 @@
+fastapi==0.68.0
+uvicorn==0.15.0
+sqlalchemy==1.4.23
+mysql-connector-python==8.0.28
+flower==1.0.0
+celery==5.1.2
+redis==3.5.3

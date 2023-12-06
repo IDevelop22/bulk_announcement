@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: fastapi_db
+      MYSQL_USER: fastapi_user
+      MYSQL_PASSWORD: fastapi_password
+    ports:
+      - "3306:3306"
+  web:
+    build: .
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  redis:
+    container_name: redis
+    image: redis:6.2-alpine
+
+  celery_worker:
+    build: .
+    command: celery -A app.celery_worker.celery worker --loglevel=info --concurrency=2
+    volumes:
+      - .:/app
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULTS_BACKEND: redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+  celery_beat:
+    build: .
+    command: celery -A app.celery_worker.celery beat --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULTS_BACKEND: redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+      - celery_worker
+
+  flower:
+    build: .
+    command: celery -A app.celery_worker.celery flower --port=5555
+    ports:
+      - 5556:5555
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULTS_BACKEND: redis://redis:6379/0  
+    depends_on:
+      - web
+      - redis
+      - celery_worker
