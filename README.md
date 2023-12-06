@@ -53,9 +53,9 @@ ______________________________________________________________
          4.Once a job is qued the task will first check in the database to compile a list of users that should recieve the text,currently it is all users.Once the list is compiled,The task will create                     individual sub tasks within the main task for each of the users to provide a more granular way of tracking which message has been processed successfully.
       ## Possible Improvements
     * Due to time constraints there is a few things that I still would want to improve on that I couldn't because I wanted to try and stick to the 4 hour limit as close as possbile
-        1. Learn and write more Idiomatic Python,currently the project is not well structured and would not adhere to Python specific ways of doing this,it is more of a mix and mash of concepts from different             languages that I have used before but implemented in python.
+        1. Learn and write more Idiomatic Python,currently the project is not well structured and would not adhere to Python specific ways of doing things,it is more of a mix and mash of concepts from                     different languages that I have used before but implemented in python.
         2. Add domain validations like checking if a similar message has been scheduled before within a specific period.
-        3. Decouple my celery tasks from the concrete db layer for easier mocking
+        3. Decouple my celery tasks and API controller from the concrete db layer for easier mocking and testing
         4. Add Tests,no one likes cowbow developers.
         5. Properly store Config in secrets and environment variables and not out in the wild,had some issues with python virtual environment on my machine thats why my config is all over.
       
